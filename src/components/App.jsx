@@ -1,5 +1,3 @@
-import { Component } from 'react';
-
 import { Searchbar } from './Searchbar/Searchbar';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 import { feachPictures } from 'service/Api';
@@ -9,91 +7,84 @@ import { ModalImg } from './App.styled';
 import { Loader } from './Loader/Loader';
 import { toast } from 'react-toastify';
 
-export class App extends Component {
-  state = {
-    searchQuery: '',
-    page: 1,
-    per_page: 12,
-    photos: [],
-    totalHits: 0,
-    showloadMore: false,
-    showLoader: false,
-    bigImgUrl: '',
-  };
-  async componentDidUpdate(prevProps, prevState) {
-    if (
-      this.state.searchQuery !== prevState.searchQuery ||
-      this.state.page !== prevState.page
-    ) {
+import React, { useEffect, useRef, useState } from 'react';
+
+export const App = () => {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [bigImgUrl, setBigImgUrl] = useState('');
+  const [page, setPage] = useState(1);
+  const [per_page, setPer_page] = useState(12);
+  const [photos, setPhotos] = useState([]);
+  const [totalHits, setTotalHits] = useState(0);
+  const [showloadMore, setShowloadMore] = useState(false);
+  const [showLoader, setShowLoader] = useState(false);
+
+  const maxPages = Math.ceil(totalHits / per_page);
+  const firstLoadOf = useRef(true);
+
+  useEffect(() => {
+    if (firstLoadOf.current) {
+      firstLoadOf.current = false;
+      return;
+    }
+    const newFeach = async () => {
       try {
-        const { page, per_page, searchQuery } = this.state;
-        this.setState({ showLoader: true, showloadMore: false });
+        setShowloadMore(false);
+        setShowLoader(true);
         const data = await feachPictures({ page, per_page, q: searchQuery });
+
         if (!data.totalHits) {
           toast.warn(
             'Sorry, but nothing was found for your request. Change the request and try again.'
           );
           return;
         }
-
-        this.setState({
-          photos: page === 1 ? data.hits : [...prevState.photos, ...data.hits],
-          totalHits: data.totalHits,
-          showloadMore:
-            page === Math.ceil(data.totalHits / per_page) ? false : true,
-        });
-      } catch {
+        setPhotos(page === 1 ? data.hits : [...photos, ...data.hits]);
+        setTotalHits(data.totalHits);
+        setShowloadMore(
+          page === Math.ceil(data.totalHits / per_page) ? false : true
+        );
+      } catch (error) {
         toast.error('Oops!!! An error occurred. Please try again.');
-        console.log('eror');
       } finally {
-        this.setState({ showLoader: false });
+        setShowLoader(false);
       }
-    }
-  }
-  handleSearchForm = query => {
+    };
+    newFeach();
+  }, [searchQuery, page]);
+
+  const handleSearchForm = query => {
     if (!query) {
       toast.warn('Please enter a request!');
       return;
     }
-    if (this.state.searchQuery !== query) {
-      this.setState({
-        photos: [],
-        searchQuery: query,
-        page: 1,
-      });
+    if (searchQuery !== query) {
+      setPhotos([]);
+      setSearchQuery(query);
+      setPage(1);
     }
   };
-  handleLoadMore = () => {
-    const { page, per_page, totalHits } = this.state;
-    const maxPages = Math.ceil(totalHits / per_page);
-    this.setState({
-      page: page < maxPages ? page + 1 : page,
-    });
+  const handleLoadMore = () => {
+    setPage(page < maxPages ? page + 1 : page);
   };
-  handleShowBigImg = url => {
-    this.setState({
-      bigImgUrl: url,
-    });
+  const handleShowBigImg = url => {
+    setBigImgUrl(url);
   };
-  closeModal = () => {
-    this.setState({ bigImgUrl: '' });
+  const closeModal = () => {
+    setBigImgUrl('');
   };
 
-  render() {
-    const { showLoader, showloadMore, bigImgUrl, searchQuery, photos } =
-      this.state;
-    return (
-      <>
-        <Searchbar onSubmit={this.handleSearchForm} />
-        <ImageGallery photos={photos} onShowBigImg={this.handleShowBigImg} />
-        {showLoader && <Loader />}
-        {showloadMore && <Button onLoadMore={this.handleLoadMore} />}
-        {bigImgUrl && (
-          <Modal closeImgModal={this.closeModal}>
-            <ModalImg src={bigImgUrl} alt={searchQuery} />
-          </Modal>
-        )}
-      </>
-    );
-  }
-}
+  return (
+    <>
+      <Searchbar onSubmit={handleSearchForm} />
+      <ImageGallery photos={photos} onShowBigImg={handleShowBigImg} />
+      {showLoader && <Loader />}
+      {showloadMore && <Button onLoadMore={handleLoadMore} />}
+      {bigImgUrl && (
+        <Modal closeImgModal={closeModal}>
+          <ModalImg src={bigImgUrl} alt={searchQuery} />
+        </Modal>
+      )}
+    </>
+  );
+};

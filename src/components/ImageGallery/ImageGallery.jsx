@@ -6,7 +6,7 @@ import { List } from './ImageGallery.styled';
 export const ImageGallery = ({ photos, onShowBigImg }) => {
   return (
     <List className="gallery">
-      {photos.map(photo => (
+      {photos.map((photo, index) => (
         <ImageGalleryItem
           {...photo}
           key={photo.id}
