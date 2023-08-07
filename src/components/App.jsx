@@ -39,7 +39,9 @@ export const App = () => {
           );
           return;
         }
-        setPhotos(page === 1 ? data.hits : [...photos, ...data.hits]);
+        setPhotos(prevPhotos =>
+          page === 1 ? data.hits : [...prevPhotos, ...data.hits]
+        );
         setTotalHits(data.totalHits);
         setShowloadMore(
           page === Math.ceil(data.totalHits / per_page) ? false : true
@@ -51,7 +53,7 @@ export const App = () => {
       }
     };
     newFeach();
-  }, [searchQuery, page]);
+  }, [searchQuery, page, per_page]);
 
   const handleSearchForm = query => {
     if (!query) {
