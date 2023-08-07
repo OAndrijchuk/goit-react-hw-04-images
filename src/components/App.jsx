@@ -13,7 +13,7 @@ export const App = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [bigImgUrl, setBigImgUrl] = useState('');
   const [page, setPage] = useState(1);
-  const [per_page, setPer_page] = useState(12);
+  const [per_page] = useState(12);
   const [photos, setPhotos] = useState([]);
   const [totalHits, setTotalHits] = useState(0);
   const [showloadMore, setShowloadMore] = useState(false);
