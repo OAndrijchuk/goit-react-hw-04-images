@@ -64,7 +64,7 @@ export const App = () => {
     }
   };
   const handleLoadMore = () => {
-    setPage(page + 1);
+    setPage(prev => prev + 1);
   };
   const handleShowBigImg = url => {
     setBigImgUrl(url);
