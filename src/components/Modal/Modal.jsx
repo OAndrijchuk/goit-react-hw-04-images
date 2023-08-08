@@ -26,4 +26,5 @@ export const Modal = ({ closeImgModal, children }) => {
 
 Modal.propTypes = {
   closeImgModal: PropTypes.func.isRequired,
+  children: PropTypes.oneOfType(PropTypes.node, PropTypes.element),
 };

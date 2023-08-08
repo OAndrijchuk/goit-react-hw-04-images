@@ -15,11 +15,10 @@ export const App = () => {
   const [page, setPage] = useState(1);
   const [per_page] = useState(12);
   const [photos, setPhotos] = useState([]);
-  const [totalHits, setTotalHits] = useState(0);
+  // const [totalHits, setTotalHits] = useState(0);
   const [showloadMore, setShowloadMore] = useState(false);
   const [showLoader, setShowLoader] = useState(false);
 
-  const maxPages = Math.ceil(totalHits / per_page);
   const firstLoadOf = useRef(true);
 
   useEffect(() => {
@@ -42,7 +41,7 @@ export const App = () => {
         setPhotos(prevPhotos =>
           page === 1 ? data.hits : [...prevPhotos, ...data.hits]
         );
-        setTotalHits(data.totalHits);
+        // setTotalHits(data.totalHits);
         setShowloadMore(
           page === Math.ceil(data.totalHits / per_page) ? false : true
         );
@@ -67,7 +66,7 @@ export const App = () => {
     }
   };
   const handleLoadMore = () => {
-    setPage(page < maxPages ? page + 1 : page);
+    setPage(page + 1);
   };
   const handleShowBigImg = url => {
     setBigImgUrl(url);
