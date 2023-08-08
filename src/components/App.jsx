@@ -15,7 +15,6 @@ export const App = () => {
   const [page, setPage] = useState(1);
   const [per_page] = useState(12);
   const [photos, setPhotos] = useState([]);
-  // const [totalHits, setTotalHits] = useState(0);
   const [showloadMore, setShowloadMore] = useState(false);
   const [showLoader, setShowLoader] = useState(false);
 
@@ -41,7 +40,6 @@ export const App = () => {
         setPhotos(prevPhotos =>
           page === 1 ? data.hits : [...prevPhotos, ...data.hits]
         );
-        // setTotalHits(data.totalHits);
         setShowloadMore(
           page === Math.ceil(data.totalHits / per_page) ? false : true
         );
