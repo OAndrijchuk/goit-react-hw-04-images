@@ -1,37 +1,22 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
+import React, { useContext } from 'react';
 import { Header, SearchBtn, SearchForm, SearchInput } from './Searchbar.styled';
+import { GlobalContext } from 'store/ContextProvider';
 
-export const Searchbar = ({ onSubmit }) => {
-  const [textSQ, setTextSQ] = useState('');
-
-  const hendleFormSubmit = e => {
-    e.preventDefault();
-    onSubmit(textSQ);
-  };
-  const hendleInputCheange = ({ target: { value } }) => {
-    setTextSQ(value);
-  };
+export const Searchbar = () => {
+  const { textSQ, setTextSQ, onSubmitt } = useContext(GlobalContext);
 
   return (
     <Header>
-      <SearchForm>
-        <SearchBtn type="submit" onClick={hendleFormSubmit}>
-          Search
-        </SearchBtn>
-
+      <SearchForm onSubmit={onSubmitt}>
+        <SearchBtn type="submit">Search</SearchBtn>
         <SearchInput
           type="text"
           placeholder="Search images and photos"
           name="textSQ"
-          onChange={hendleInputCheange}
+          onChange={({ target: { value } }) => setTextSQ(value)}
           value={textSQ}
         />
       </SearchForm>
     </Header>
   );
-};
-
-Searchbar.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
 };

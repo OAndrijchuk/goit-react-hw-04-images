@@ -1,30 +1,26 @@
 import { Overlay, ModalContainer } from './Modal.styled';
-import PropTypes from 'prop-types';
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
+import { GlobalContext } from 'store/ContextProvider';
 
-export const Modal = ({ closeImgModal, children }) => {
+export const Modal = ({ children }) => {
+  const { setBigImgUrl } = useContext(GlobalContext);
   useEffect(() => {
     const handleEscape = e => {
       if (e.code === 'Escape') {
-        closeImgModal();
+        setBigImgUrl('');
       }
     };
     window.addEventListener('keydown', handleEscape);
     return () => {
       window.removeEventListener('keydown', handleEscape);
     };
-  }, [closeImgModal]);
+  }, [setBigImgUrl]);
 
   return (
     <Overlay
-      onClick={e => (e.target === e.currentTarget ? closeImgModal() : null)}
+      onClick={e => (e.target === e.currentTarget ? setBigImgUrl('') : null)}
     >
       <ModalContainer>{children}</ModalContainer>
     </Overlay>
   );
-};
-
-Modal.propTypes = {
-  closeImgModal: PropTypes.func.isRequired,
-  children: PropTypes.oneOfType([PropTypes.node, PropTypes.element]),
 };
