@@ -6,7 +6,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import './index.css';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  //  <React.StrictMode>
   <>
     <ToastContainer
       position="top-right"
@@ -17,5 +16,4 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     />
     <App />
   </>
-  //  </React.StrictMode>
 );
